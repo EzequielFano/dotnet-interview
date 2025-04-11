@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Immutable;
 using TodoApi.Dtos;
 using TodoApi.Models;
 
@@ -20,14 +21,20 @@ namespace TodoApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IList<TodoList>>> GetTodoLists()
         {
-            return Ok(await _context.TodoList.ToListAsync());
+            var todoLists = await _context.TodoList
+                 .Include(tl => tl.TodoItems)
+                 .ToListAsync();
+
+            return Ok(todoLists);
         }
 
         // GET: api/todolists/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TodoList>> GetTodoList(long id)
         {
-            var todoList = await _context.TodoList.FindAsync(id);
+            var todoList = await _context.TodoList
+                 .Include(tl => tl.TodoItems)
+                 .FirstOrDefaultAsync(tl => tl.Id == id);
 
             if (todoList == null)
             {

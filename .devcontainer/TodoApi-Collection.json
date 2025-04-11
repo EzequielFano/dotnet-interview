@@ -1,0 +1,154 @@
+{
+  "info": {
+    "_postman_id": "d2e0d939-8f3d-4d79-8f88-9e7d1a1b9f3c",
+    "name": "TodoApi Collection",
+    "description": "Colección para probar el controller TodoListsController de la API TodoApi",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Obtener todas las TodoLists",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5130/api/todolists",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5130",
+          "path": [
+            "api",
+            "todolists"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Obtener TodoList por ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5130/api/todolists/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5130",
+          "path": [
+            "api",
+            "todolists",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crear TodoList",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Nueva Lista de Tareas\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5130/api/todolists",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5130",
+          "path": [
+            "api",
+            "todolists"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Actualizar TodoList",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Lista Actualizada\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5130/api/todolists/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5130",
+          "path": [
+            "api",
+            "todolists",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar TodoList",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5130/api/todolists/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5130",
+          "path": [
+            "api",
+            "todolists",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
