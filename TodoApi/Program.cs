@@ -7,15 +7,17 @@ using TodoApi.Models;
 using TodoApi.Services;
 using Microsoft.IdentityModel.Logging;
 
-IdentityModelEventSource.ShowPII = true;
 
 var builder = WebApplication.CreateBuilder(args);
-builder
-    .Services.AddDbContext<TodoContext>(opt =>
+
+IdentityModelEventSource.ShowPII = true;
+
+builder.Services.AddDbContext<TodoContext>(opt =>
         opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-    )
-    .AddEndpointsApiExplorer()
-    .AddControllers();
+    );
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -49,7 +51,14 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();
