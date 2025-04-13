@@ -1,154 +1,361 @@
 {
   "info": {
-    "_postman_id": "d2e0d939-8f3d-4d79-8f88-9e7d1a1b9f3c",
-    "name": "TodoApi Collection",
-    "description": "Colección para probar el controller TodoListsController de la API TodoApi",
+    "_postman_id": "d33dbaf1-9cbd-4bdf-93f2-0e2be3e9b7d1",
+    "name": "Todo API Collection with Authentication",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Obtener todas las TodoLists",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
-          }
-        ],
-        "url": {
-          "raw": "http://localhost:5130/api/todolists",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "5130",
-          "path": [
-            "api",
-            "todolists"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Obtener TodoList por ID",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
-          }
-        ],
-        "url": {
-          "raw": "http://localhost:5130/api/todolists/1",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "5130",
-          "path": [
-            "api",
-            "todolists",
-            "1"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Crear TodoList",
+      "name": "Account: Register",
       "request": {
         "method": "POST",
         "header": [
           {
             "key": "Content-Type",
             "value": "application/json"
-          },
-          {
-            "key": "Accept",
-            "value": "application/json"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"name\": \"Nueva Lista de Tareas\"\n}"
+          "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"Test@123\",\n  \"confirmPassword\": \"Test@123\"\n}"
         },
         "url": {
-          "raw": "http://localhost:5130/api/todolists",
-          "protocol": "http",
+          "raw": "{{baseUrl}}/api/Account/register",
           "host": [
-            "localhost"
+            "{{baseUrl}}"
           ],
-          "port": "5130",
           "path": [
             "api",
-            "todolists"
+            "Account",
+            "register"
           ]
         }
       },
       "response": []
     },
     {
-      "name": "Actualizar TodoList",
+      "name": "Account: Login",
       "request": {
-        "method": "PUT",
+        "method": "POST",
         "header": [
           {
             "key": "Content-Type",
             "value": "application/json"
-          },
-          {
-            "key": "Accept",
-            "value": "application/json"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"name\": \"Lista Actualizada\"\n}"
+          "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"Test@123\"\n}"
         },
         "url": {
-          "raw": "http://localhost:5130/api/todolists/1",
-          "protocol": "http",
+          "raw": "{{baseUrl}}/api/Account/login",
           "host": [
-            "localhost"
+            "{{baseUrl}}"
           ],
-          "port": "5130",
           "path": [
             "api",
-            "todolists",
-            "1"
+            "Account",
+            "login"
           ]
         }
       },
       "response": []
     },
     {
-      "name": "Eliminar TodoList",
+      "name": "GET Todo Lists",
       "request": {
-        "method": "DELETE",
+        "method": "GET",
         "header": [
           {
-            "key": "Accept",
-            "value": "application/json"
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
           }
         ],
         "url": {
-          "raw": "http://localhost:5130/api/todolists/1",
-          "protocol": "http",
+          "raw": "{{baseUrl}}/api/TodoLists",
           "host": [
-            "localhost"
+            "{{baseUrl}}"
           ],
-          "port": "5130",
           "path": [
             "api",
-            "todolists",
-            "1"
+            "TodoLists"
           ]
         }
       },
       "response": []
+    },
+    {
+      "name": "GET Todo List by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/TodoLists/{{todoListId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "TodoLists",
+            "{{todoListId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST Create Todo List",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"New Test List\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/TodoLists",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "TodoLists"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT Update Todo List",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated List Name\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/TodoLists/{{todoListId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "TodoLists",
+            "{{todoListId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE Todo List",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/TodoLists/{{todoListId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "TodoLists",
+            "{{todoListId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET Todo Items",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/TodoLists/{{todoListId}}/todoitems",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "TodoLists",
+            "{{todoListId}}",
+            "todoitems"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET Todo Item by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/TodoLists/{{todoListId}}/todoitems/{{todoItemId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "TodoLists",
+            "{{todoListId}}",
+            "todoitems",
+            "{{todoItemId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST Create Todo Item",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"itemName\": \"New Test Item\",\n  \"description\": \"Test Description\",\n  \"status\": \"Created\",\n  \"todoListId\": {{todoListId}}\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/TodoLists/{{todoListId}}/todoitems",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "TodoLists",
+            "{{todoListId}}",
+            "todoitems"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT Update Todo Item",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": {{todoItemId}},\n  \"itemName\": \"Updated Item Name\",\n  \"description\": \"Updated Description\",\n  \"status\": \"InProgress\",\n  \"todoListId\": {{todoListId}}\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/TodoLists/{{todoListId}}/todoitems/{{todoItemId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "TodoLists",
+            "{{todoListId}}",
+            "todoitems",
+            "{{todoItemId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE Todo Item",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwtToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/TodoLists/{{todoListId}}/todoitems/{{todoItemId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "TodoLists",
+            "{{todoListId}}",
+            "todoitems",
+            "{{todoItemId}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5130"
+    },
+    {
+      "key": "todoListId",
+      "value": "1"
+    },
+    {
+      "key": "todoItemId",
+      "value": "1"
+    },
+    {
+      "key": "jwtToken",
+      "value": ""
     }
   ]
 }

@@ -1,7 +1,8 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
 
-public class TodoContext : DbContext
+public class TodoContext : IdentityDbContext<ApplicationUser>
 {
     public TodoContext(DbContextOptions<TodoContext> options)
         : base(options) { }
@@ -11,7 +12,6 @@ public class TodoContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Configuramos la relación: un TodoList tiene muchos TodoItems
         modelBuilder.Entity<TodoList>()
             .HasMany(tl => tl.TodoItems)
             .WithOne(ti => ti.TodoList)

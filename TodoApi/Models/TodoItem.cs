@@ -6,10 +6,11 @@ namespace TodoApi.Models
     {
         public long Id { get; set; }
         public required string ItemName { get; set; }
-        public long TodoListId { get; set; }
+        public string? Description { get; set; } 
+        public TodoItemStatus Status { get; set; } = TodoItemStatus.Created;
+        public required long TodoListId { get; set; }
 
         [JsonIgnore]
         public TodoList? TodoList { get; set; }
-        //public required string OldName {  get; set; }
     }
 }

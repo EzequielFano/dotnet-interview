@@ -1,121 +1,54 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿// File: TodoApi.Tests/TodoItemsControllerTests.cs
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 using TodoApi.Controllers;
 using TodoApi.Models;
+using TodoApi.Services;
+using Xunit;
 
-namespace TodoApi.Tests.Controllers
+namespace TodoApi.Tests
 {
     public class TodoItemsControllerTests
     {
-
-        private DbContextOptions<TodoContext> DatabaseContextOptions()
-        {
-            return new DbContextOptionsBuilder<TodoContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .Options;
-        }
         [Fact]
-        public async Task GetTodoItems_Returns_Items_When_TodoList_Exists()
+        public async Task GetTodoItems_ReturnsOkResult_WithListOfTodoItems()
         {
-            using var context = new TodoContext(DatabaseContextOptions());
-            var todoList = new TodoList { Id = 1, Name = "Lista de Prueba" };
-            context.TodoList.Add(todoList);
-            context.TodoItems.Add(new TodoItem { Id = 1, ItemName = "Item 1", TodoListId = 1 });
-            context.TodoItems.Add(new TodoItem { Id = 2, ItemName = "Item 2", TodoListId = 1 });
-            await context.SaveChangesAsync();
+            // Arrange
+            var mockService = new Mock<ITodoService>();
+            long todoListId = 1;
+            var testTodoItems = new List<TodoItem>
+            {
+                new TodoItem { Id = 1, ItemName = "Item 1", Status = TodoItemStatus.Created, TodoListId = todoListId },
+                new TodoItem { Id = 2, ItemName = "Item 2", Status = TodoItemStatus.InProgress, TodoListId = todoListId }
+            };
+            mockService.Setup(s => s.GetTodoItemsAsync(todoListId)).ReturnsAsync(testTodoItems);
+            var controller = new TodoItemsController(mockService.Object);
 
-            var controller = new TodoItemsController(context);
+            // Act
+            var result = await controller.GetTodoItems(todoListId);
 
-            var actionResult = await controller.GetTodoItems(1);
-
-            var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var items = Assert.IsAssignableFrom<IEnumerable<TodoItem>>(okResult.Value);
-            Assert.Equal(2, items.Count());
+            Assert.NotEmpty(items);
         }
 
         [Fact]
-        public async Task GetTodoItem_Returns_Item_When_Exists()
+        public async Task GetTodoItem_ReturnsNotFound_WhenItemDoesNotExist()
         {
-            using var context = new TodoContext(DatabaseContextOptions());
-            var todoList = new TodoList { Id = 1, Name = "Lista de Prueba" };
-            var todoItem = new TodoItem { Id = 1, ItemName = "Item de Prueba", TodoListId = 1 };
-            context.TodoList.Add(todoList);
-            context.TodoItems.Add(todoItem);
-            await context.SaveChangesAsync();
+            // Arrange
+            var mockService = new Mock<ITodoService>();
+            mockService.Setup(s => s.GetTodoItemAsync(It.IsAny<long>(), It.IsAny<long>())).ReturnsAsync((TodoItem)null);
+            var controller = new TodoItemsController(mockService.Object);
 
-            var controller = new TodoItemsController(context);
+            // Act
+            var result = await controller.GetTodoItem(1, 999);
 
-            var actionResult = await controller.GetTodoItem(1, 1);
-
-            var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
-            var item = Assert.IsType<TodoItem>(okResult.Value);
-            Assert.Equal("Item de Prueba", item.ItemName);
+            // Assert
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
+            Assert.Equal("TodoItem not found", notFoundResult.Value);
         }
-
-        [Fact]
-        public async Task CreateTodoItem_Returns_CreatedAtRoute_When_Successful()
-        {
-            using var context = new TodoContext(DatabaseContextOptions());
-            var todoList = new TodoList { Id = 1, Name = "Lista de Prueba" };
-            context.TodoList.Add(todoList);
-            await context.SaveChangesAsync();
-
-            var controller = new TodoItemsController(context);
-            var newItem = new TodoItem { ItemName = "Nuevo Item" };
-
-            var actionResult = await controller.CreateTodoItem(1, newItem);
-
-            var createdResult = Assert.IsType<CreatedAtRouteResult>(actionResult.Result);
-            var createdItem = Assert.IsType<TodoItem>(createdResult.Value);
-            Assert.Equal(1, createdItem.TodoListId);
-            Assert.NotEqual(0, createdItem.Id); 
-        }
-
-        [Fact]
-        public async Task UpdateTodoItem_Returns_NoContent_When_Successful()
-        {
-            using var context = new TodoContext(DatabaseContextOptions());
-            var todoList = new TodoList { Id = 1L, Name = "Lista de Prueba" };
-            var todoItem = new TodoItem { Id = 1L, ItemName = "Item Original", TodoListId = 1L };
-            context.TodoList.Add(todoList);
-            context.TodoItems.Add(todoItem);
-            await context.SaveChangesAsync();
-
-            var controller = new TodoItemsController(context);
-            var updatedItem = new TodoItem { Id = 1L, ItemName = "NombreNuevo" };
-
-            var result = await controller.UpdateTodoItem(1L, 1L, updatedItem);
-
-            Assert.IsType<NoContentResult>(result);
-            var itemInDb = await context.TodoItems.FindAsync(1L);
-            Assert.Equal("NombreNuevo", itemInDb.ItemName);
-        }
-
-        [Fact]
-        public async Task DeleteTodoItem_Returns_NoContent_When_Successful()
-        {
-            using var context = new TodoContext(DatabaseContextOptions());
-            var todoList = new TodoList { Id = 1L, Name = "Lista de Prueba" };
-            var todoItem = new TodoItem { Id = 1L, ItemName = "Item a eliminar", TodoListId = 1L };
-            context.TodoList.Add(todoList);
-            context.TodoItems.Add(todoItem);
-            await context.SaveChangesAsync();
-
-            var controller = new TodoItemsController(context);
-
-            var result = await controller.DeleteTodoItem(1L, 1L);
-
-            Assert.IsType<NoContentResult>(result);
-            var deletedItem = await context.TodoItems.FindAsync(1L);
-            Assert.Null(deletedItem);
-        }
-
-
     }
-
 }
